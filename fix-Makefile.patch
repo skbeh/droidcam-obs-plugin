@@ -1,0 +1,67 @@
+From 1224829edb1798239e862913b9343c7f2616e1b4 Mon Sep 17 00:00:00 2001
+From: Aviana Cruz <gwencroft@proton.me>
+Date: Sat, 20 Aug 2022 22:25:07 +0800
+Subject: [PATCH] fix Makefile
+
+---
+ Makefile            | 7 ++-----
+ src/ffmpeg_decode.c | 2 +-
+ src/ffmpeg_decode.h | 2 +-
+ 3 files changed, 4 insertions(+), 7 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 6ae2d1b..2b6075f 100644
+--- a/Makefile
++++ b/Makefile
+@@ -4,8 +4,7 @@ DATA_DIR = data
+ BUILD_DIR = build
+ 
+ RM       = rm -f
+-CXX      = g++
+-CXXFLAGS = -std=c++11 -x c++ -Wall -fPIC
++CXXFLAGS += -std=c++11 -x c++ -fPIC
+ INCLUDES = -Isrc/
+ LDD_DIRS =
+ LDD_LIBS =
+@@ -49,11 +48,9 @@ ifeq "$(ALLOW_STATIC)" "yes"
+ 	STATIC += $(IMOBILEDEV_DIR)/lib/libplist-2.0.a
+ 
+ else
+-	LDD_DIRS += -L$(JPEG_LIB)
+-	LDD_DIRS += -L$(IMOBILEDEV_DIR)/lib
+ 
+ 	LDD_LIBS += -lturbojpeg
+-	LDD_LIBS += -limobiledevice
++	LDD_LIBS += -limobiledevice-1.0
+ endif
+ 
+ INCLUDES += -I$(IMOBILEDEV_DIR)/include
+diff --git a/src/ffmpeg_decode.c b/src/ffmpeg_decode.c
+index 5c5f6e0..76c582b 100644
+--- a/src/ffmpeg_decode.c
++++ b/src/ffmpeg_decode.c
+@@ -45,7 +45,7 @@ enum AVHWDeviceType hw_device_list[] = {
+ 	AV_HWDEVICE_TYPE_NONE,
+ };
+ 
+-static AVPixelFormat has_hw_type(AVCodec *c, enum AVHWDeviceType type)
++static AVPixelFormat has_hw_type(const AVCodec *c, enum AVHWDeviceType type)
+ {
+ 	for (int i = 0;; i++) {
+ 		const AVCodecHWConfig *config = avcodec_get_hw_config(c, i);
+diff --git a/src/ffmpeg_decode.h b/src/ffmpeg_decode.h
+index bf26059..7e23b55 100644
+--- a/src/ffmpeg_decode.h
++++ b/src/ffmpeg_decode.h
+@@ -46,7 +46,7 @@ extern "C" {
+ 
+ struct FFMpegDecoder : Decoder {
+ 	AVCodecContext *decoder;
+-	AVCodec *codec;
++	const AVCodec *codec;
+ 	AVPacket *packet;
+ 	AVBufferRef *hw_ctx;
+ 	AVFrame *frame_hw;
+-- 
+2.37.2
+

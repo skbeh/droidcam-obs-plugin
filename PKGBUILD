@@ -2,7 +2,7 @@
 # Contributer: David Mazieres (http://www.scs.stanford.edu/~dm/addr/)
 
 pkgname='droidcam-obs-plugin'
-pkgver='1.5.1'
+pkgver='1.6.0'
 pkgrel='2'
 pkgdesc='plugin for droidcam obs'
 arch=("x86_64" "i686")
@@ -10,10 +10,11 @@ url='https://dev47apps.com/obs/'
 srcurl='https://github.com/dev47apps/droidcam-obs-plugin.git'
 license=('GPL')
 depends=('obs-studio' 'libjpeg-turbo' 'libusbmuxd' 'libimobiledevice')
-conflicts=("${pkgname}-git")
 pkgstem=${pkgname%-git}
+provides=("${pkgstem}")
+conflicts=("${pkgstem}")
 source=("${pkgstem}::git+${srcurl}#tag=${pkgver}" "fix-Makefile.patch")
-sha256sums=('SKIP' '878f60202803207390bc0cc888924d510f15750bc3cfc131483e4fac188bbdc1')
+sha256sums=('SKIP' 'f9a57b64ab8e156a9e25355010a41d059a4486f9af402505975dc9e4bb1c3d56')
 
 prepare() {
     cd "$srcdir/$pkgstem"
